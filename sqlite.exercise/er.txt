@@ -1,0 +1,214 @@
+
+#01
+D:\mk\sqlite\employee.salary.allowances>sqlite3
+SQLite version 3.51.1 2025-11-28 17:28:25
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+
+#02
+sqlite> .database
+main: "" r/w	
+
+#03
+sqlite> .open mkdb.db
+
+#04
+sqlite> .system dir/b D:\mk\sqlite\employee.salary.allowances\
+mkdb.db
+
+#05
+sqlite> .databases
+main: D:\mk\sqlite\employee.salary.allowances\mkdb.db r/w
+
+#06
+sqlite> .database
+main: D:\mk\sqlite\employee.salary.allowances\mkdb.db r/w
+
+#07
+sqlite> .tables
+
+#08		
+sqlite> .system cls
+
+#09
+sqlite> drop table if exists ertbl;
+
+#10
+sqlite> create table if not exists ertbl(
+'rno' integer not null primary key autoincrement,
+ 'sname' text not null,
+'m1' numeric(5, 2) not null check (m1 >= 0 and m1 <= 99.99),
+'m2' numeric(5, 2) not null check (m2 >= 0 and m2 <= 99.99),
+'total' numeric(6, 2) as (m1 + m2),
+'average' numeric(5, 2) as (total / 2),
+'result' char(4) as (if(m1 > 34.4 and m2 > 34.4, 'Pass', 'Fail'));
+
+#11
+sqlite> .tables
+ertbl
+
+#12
+sqlite> select * from ertbl;
+
+#13
+sqlite> select count(*) from ertbl;
+0
+
+#14
+sqlite> insert into ertbl
+(rno, sname, m1, m2)
+values
+(1001, 'x5', 45, 54.5);
+
+#15
+sqlite> select * from ertbl;
+1001|x5|45|54.5|99.5|49.75|Pass
+
+#16
+sqlite> .mode columns
+
+
+#17
+sqlite> .headers on
+
+
+#18
+sqlite> select * from ertbl;
+rno   sname  m1  m2    total  average  result
+----  -----  --  ----  -----  -------  ------
+1001  x5     45  54.5  99.5   49.75    Pass
+
+#19
+sqlite> insert into ertbl
+(sname, m1, m2)
+values
+('x3', 36.5, 43),
+('x1', 61, 72.5),
+('x2', 98, 20),
+('x4', 81.5, 77);
+
+#20
+sqlite> select * from ertbl;
+rno   sname  m1    m2    total  average  result
+----  -----  ----  ----  -----  -------  ------
+1001  x5     45    54.5  99.5   49.75    Pass
+1002  x3     36.5  43    79.5   39.75    Pass
+1003  x1     61    72.5  133.5  66.75    Pass
+1004  x2     98    20    118    59       Fail
+1005  x4     81.5  77    158.5  79.25    Pass
+
+#21
+sqlite> .system cls
+
+#22
+sqlite> select rno, result from ertbl;
+rno   result
+----  ------
+1001  Pass
+1002  Pass
+1003  Pass
+1004  Fail
+1005  Pass
+
+#23
+sqlite> select rno, result from ertbl order by rno desc;
+rno   result
+----  ------
+1005  Pass
+1004  Fail
+1003  Pass
+1002  Pass
+1001  Pass
+
+#24
+sqlite> .system cls
+
+#25
+sqlite> select count(*) from ertbl;
+count(*)
+--------
+5
+
+#26
+sqlite> select * from ertbl;
+rno   sname  m1    m2    total  average  result
+----  -----  ----  ----  -----  -------  ------
+1001  x5     45    54.5  99.5   49.75    Pass
+1002  x3     36.5  43    79.5   39.75    Pass
+1003  x1     61    72.5  133.5  66.75    Pass
+1004  x2     98    20    118    59       Fail
+1005  x4     81.5  77    158.5  79.25    Pass
+
+#27
+sqlite> select * from ertbl where result='Fail';
+rno   sname  m1  m2  total  average  result
+----  -----  --  --  -----  -------  ------
+1004  x2     98  20  118    59       Fail
+
+#28
+sqlite> select * from ertbl where result='Pass';
+rno   sname  m1    m2    total  average  result
+----  -----  ----  ----  -----  -------  ------
+1001  x5     45    54.5  99.5   49.75    Pass
+1002  x3     36.5  43    79.5   39.75    Pass
+1003  x1     61    72.5  133.5  66.75    Pass
+1005  x4     81.5  77    158.5  79.25    Pass
+
+#29
+sqlite> select * from ertbl;
+rno   sname  m1    m2    total  average  result
+----  -----  ----  ----  -----  -------  ------
+1001  x5     45    54.5  99.5   49.75    Pass
+1002  x3     36.5  43    79.5   39.75    Pass
+1003  x1     61    72.5  133.5  66.75    Pass
+1004  x2     98    20    118    59       Fail
+1005  x4     81.5  77    158.5  79.25    Pass
+
+#30
+sqlite> delete from ertbl where rno > 1002;
+
+#31
+sqlite> select * from ertbl;
+rno   sname  m1    m2    total  average  result
+----  -----  ----  ----  -----  -------  ------
+1001  x5     45    54.5  99.5   49.75    Pass
+1002  x3     36.5  43    79.5   39.75    Pass
+
+#32
+sqlite> .system cls
+
+#33
+sqlite> select count(*) from ertbl;
+count(*)
+--------
+2
+
+#34
+sqlite> delete from ertbl;
+
+#35
+sqlite> select count(*) from ertbl;
+count(*)
+--------
+0
+
+#36
+sqlite> .tables
+ertbl
+
+#37
+sqlite> .version
+SQLite 3.51.1 2025-11-28 17:28:25 281fc0e9afc38674b9b0991943b9e9d1e64c6cbdb133d35f6f5c87ff6af38a88
+zlib version 1.3
+msvc-1939 (64-bit)
+
+#38
+sqlite> .exit
+
+#39
+sqlite> exit
+
+
+
+

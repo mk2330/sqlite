@@ -1,0 +1,154 @@
+#01
+D:\mk\sqlite\employee.salary.allowances>sqlite3
+SQLite version 3.51.1 2025-11-28 17:28:25
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+
+#02
+sqlite> .open mkdb.db
+
+#03
+sqlite> .databases
+main: D:\mk\sqlite\employee.salary.allowances\mkdb.db r/w
+
+#04
+sqlite> .database
+main: D:\mk\sqlite\employee.salary.allowances\mkdb.db r/w
+
+#05
+sqlite> .tables
+ertbl
+
+#06
+sqlite> drop table if exists esatbl;
+
+#07
+sqlite> create table if not exists esatbl
+('eid' integer not null primary key autoincrement,
+'ename' text not null,
+'sal' numeric(11, 2) check(sal >= 0),
+'hra' numeric(9, 2) as (sal * 20.0 / 100),
+'da' numeric(9, 2) as (sal * 15.0 / 100),
+'pf' numeric(9, 2) as (sal * 35.0 / 100),
+'gpay' numeric(13, 2) as (sal + hra + da),
+'npay'  numeric(11, 2) as (gpay - pf)
+);
+
+#08
+sqlite> .tables
+ertbl   esatbl
+
+
+#09
+sqlite> select * from esatbl;
+
+#10
+sqlite> insert into esatbl
+(eid, ename, sal)
+values
+(1001, 'x5', 100);
+
+#11
+sqlite> select * from esatbl;
+1001|x5|100|20|15|35|135|100
+
+#12
+sqlite> .mode columns
+
+#13
+sqlite> .headers on
+
+#14
+sqlite> select * from esatbl;
+eid   ename  sal  hra  da  pf  gpay  npay
+----  -----  ---  ---  --  --  ----  ----
+1001  x5     100  20   15  35  135   100
+
+#15
+sqlite> insert into esatbl
+(ename, sal)
+values
+('x3', 300000),
+('x1', 100000),
+('x2', 200000),
+('x4', 400000);
+
+#16
+sqlite> select * from esatbl;
+eid   ename  sal     hra    da     pf      gpay    npay
+----  -----  ------  -----  -----  ------  ------  ------
+1001  x5     100     20     15     35      135     100
+1002  x3     300000  60000  45000  105000  405000  300000
+1003  x1     100000  20000  15000  35000   135000  100000
+1004  x2     200000  40000  30000  70000   270000  200000
+1005  x4     400000  80000  60000  140000  540000  400000
+
+#17
+sqlite> update esatbl set sal=500000 where eid=1001;
+
+#18
+sqlite> delete from esatbl where eid=1003;
+
+#19
+sqlite> select eid, ename, npay from esatbl;
+eid   ename  npay
+----  -----  ------
+1001  x5     500000
+1002  x3     300000
+1004  x2     200000
+1005  x4     400000
+
+#20
+sqlite> select * from esatbl where eid > 1001 and eid < 1005;
+eid   ename  sal     hra    da     pf      gpay    npay
+----  -----  ------  -----  -----  ------  ------  ------
+1002  x3     300000  60000  45000  105000  405000  300000
+1004  x2     200000  40000  30000  70000   270000  200000
+
+#21
+sqlite> select * from esatbl;
+eid   ename  sal     hra     da     pf      gpay    npay
+----  -----  ------  ------  -----  ------  ------  ------
+1001  x5     500000  100000  75000  175000  675000  500000
+1002  x3     300000  60000   45000  105000  405000  300000
+1004  x2     200000  40000   30000  70000   270000  200000
+1005  x4     400000  80000   60000  140000  540000  400000
+
+#22
+sqlite> select count(*) from esatbl;
+count(*)
+--------
+4
+
+#23
+sqlite> delete from esatbl;
+
+#24
+sqlite> select * from esatbl;
+
+#25
+sqlite> select count(*) from esatbl;
+count(*)
+--------
+0
+
+#26
+sqlite> .tables
+ertbl   esatbl
+
+#27
+sqlite> drop table if exists esatbl;
+
+#28
+sqlite> .tables
+ertbl
+
+#29
+sqlite> .exit
+
+#30
+sqlite> exit
+
+
+
